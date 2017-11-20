@@ -14,20 +14,9 @@ export default class TopHotSauce extends React.Component {
     }
 
     componentDidMount() {
-        const sauces = [
-            {
-                'id': 1,
-                'name': 'Awesome Sauce',
-                'rating': 5
-            },
-            {
-                'id': 2,
-                'name': 'Bad Ass Sauce',
-                'rating': 4
-            }
-        ];
-
-        this.setState({ sauces });
+        fetch('http://localhost:8000/')
+        .then(res => res.json())
+        .then(sauces => this.setState({ sauces }));
     }
 
     handleChange(event) {
