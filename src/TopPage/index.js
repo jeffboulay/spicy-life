@@ -1,45 +1,47 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 export default class TopHotSauce extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             sauce: '',
-            rating:'',
+            rating: '',
             sauces: []
         };
         this.addSauce = this.addSauce.bind(this);
         this.handleChange = this.handleChange.bind(this);
     }
-
     componentDidMount() {
-        fetch('http://localhost:8000/')
-        .then(res => res.json())
-        .then(sauces => this.setState({ sauces }));
+        axios.get('http://localhost:8000/top-sauces')
+            .then(res => this.setState(res.data));
     }
 
     handleChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-    
         this.setState({
-          [name]: value
+            [name]: value
         });
     }
 
     addSauce(event) {
         event.preventDefault();
-        const sauce = { 
-            name: this.state.sauce,
-            rating: this.state.rating
-        }
-        this.setState({
-            sauces: this.state.sauces.concat(sauce)
-        })
+        const sauce = { "name": this.state.sauce, "rating": this.state.rating }
+        axios.post('http://localhost:8000/top-sauces', sauce)
+            .then(response => this.setState(
+                { sauces: this.state.sauces.concat(sauce) }
+            ))
     }
-
+    deleteSauce(sauce) {
+        const newSauces = this.state.sauces;
+        if (newSauces.indexOf(sauce) > -1) {
+        newSauces.splice(newSauces.indexOf(sauce), 1);
+        this.setState({sauces: newSauces})
+        }
+    }
     render() {
         return (
             <div>
@@ -63,7 +65,7 @@ export default class TopHotSauce extends React.Component {
                 </form>
                 <ol>
                     {this.state.sauces.map(sauce =>
-                        <li key={sauce.id}>{sauce.name} <strong>{sauce.rating}</strong></li>
+                        <li key={sauce._id}>{sauce.name} <strong>{sauce.rating}</strong> <button onClick={this.deleteSauce.bind(this, sauce)}>Delete</button></li>
                     )}
                 </ol>
                 <Link to='/'>Back</Link>

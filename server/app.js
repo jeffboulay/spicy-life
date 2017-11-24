@@ -1,15 +1,19 @@
 
-const Hapi = require('hapi');
-const mongoose = require('mongoose');
+var Hapi = require('hapi');
+var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/spicyLife', { useMongoClient: true })
     .then(() => console.log('MongoDB connected...'))
     .catch(err => console.error(err));
 
 // Create Sauce Model
-const Sauce = mongoose.model('Sauce', {text:String});
+var sauce = mongoose.model('Sauce', 
+{
+    name:String,
+    rating:String
+});
 
 // Init Server
-const server = new Hapi.Server();
+var server = new Hapi.Server();
 
 // Add Connection
 server.connection({
@@ -42,9 +46,9 @@ server.route({
 // GET Sauces Route
 server.route({
     method:'GET',
-    path:'/sauces',
+    path:'/top-sauces',
     handler: (request, reply) => {
-        let sauces = Task.find((err, sauces) => {
+        var sauces = sauce.find((err, sauces) => {
             reply({sauces:sauces});
         });
     }
@@ -53,13 +57,15 @@ server.route({
 // POST suaces Route
 server.route({
     method:'POST',
-    path:'/suaces',
+    path:'/top-sauces',
     handler: (request, reply) => {
-        let text = request.payload.text;
-        let newSuace= new suace({text:text});
-        newSuace.save((err, suace) => {
+        var newSauce= new sauce({
+            name:request.payload.name,
+            rating:request.payload.rating
+        });
+        newSauce.save((err, sauce) => {
             if(err) return console.log(err);
-            return reply.redirect().location('suaces');
+            return reply(sauce);
         });
     }
 });
