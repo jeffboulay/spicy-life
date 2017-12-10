@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
+import SauceList from '../components/SauceList';
 export default class TopHotSauce extends React.Component {
     constructor(props) {
         super(props);
@@ -63,11 +63,7 @@ export default class TopHotSauce extends React.Component {
                     />
                     <input type="submit" value="submit" />
                 </form>
-                <ol>
-                    {this.state.sauces.map(sauce =>
-                        <li key={sauce._id}>{sauce.name} <strong>{sauce.rating}</strong> <button onClick={this.deleteSauce.bind(this, sauce)}>Delete</button></li>
-                    )}
-                </ol>
+                <SauceList sauces={this.state.sauces} deleteSauce={this.deleteSauce} />
                 <Link to='/'>Back</Link>
             </div>
         )

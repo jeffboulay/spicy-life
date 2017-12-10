@@ -5,7 +5,7 @@ export default class Trending extends React.Component {
     constructor (props){
         super(props);
         this.state = {
-            sauces:[]
+            sauces:[],
         }
     }
 
